@@ -444,6 +444,34 @@
     margin-left: 8px;
   }
 
+  /* ── DATE RANGE PICKER ── */
+  .date-range-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .date-range-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .date-range-inputs input[type="date"] {
+    width: 100%; background: var(--navy-mid); border: 1px solid var(--navy-border);
+    border-radius: 3px; padding: 12px 14px;
+    color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border-color 0.2s;
+    color-scheme: dark;
+  }
+  .date-range-inputs input[type="date"]:focus { border-color: var(--amber); }
+  .date-range-inputs input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.6) sepia(1) saturate(3) hue-rotate(5deg);
+    cursor: pointer;
+  }
+  .date-sublabel {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 5px;
+  }
+  .date-field { display: flex; flex-direction: column; }
+  .date-range-summary {
+    font-size: 0.75rem; color: var(--amber);
+    padding: 7px 10px; background: var(--amber-glow);
+    border: 1px solid rgba(201,151,63,0.2); border-radius: 3px;
+    display: none;
+  }
+  .date-range-summary.show { display: block; }
+
   /* ── MODAL ── */
   .modal-overlay {
     display: none; position: fixed; inset: 0; z-index: 200;
@@ -560,8 +588,12 @@
     .tiers { grid-template-columns: 1fr; }
     .pillars { grid-template-columns: 1fr; }
     .mobile-float-bar { display: flex; }
-    /* Pad page bottom so float bar doesn't cover content */
     body { padding-bottom: 96px; }
+  }
+  @media (min-width: 1101px) {
+    /* Sidebar always visible on desktop — ensure it doesn't collapse */
+    .sidebar { display: block !important; }
+    .mobile-float-bar { display: none !important; }
   }
   @media (max-width: 700px) {
     nav { padding: 16px 20px; }
@@ -866,8 +898,20 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="fdate">Event Date</label>
-        <input type="date" id="fdate" />
+        <label>Rental Dates <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(select start and end)</span></label>
+        <div class="date-range-wrap">
+          <div class="date-range-inputs">
+            <div class="date-field">
+              <span class="date-sublabel">Start Date</span>
+              <input type="date" id="fdate-start" onchange="updateDateSummary()" />
+            </div>
+            <div class="date-field">
+              <span class="date-sublabel">End Date</span>
+              <input type="date" id="fdate-end" onchange="updateDateSummary()" />
+            </div>
+          </div>
+          <div class="date-range-summary" id="date-summary"></div>
+        </div>
       </div>
       <div class="form-group">
         <label for="fnotes">Event Notes (optional)</label>
@@ -1072,6 +1116,10 @@
       li.textContent = name;
       list.appendChild(li);
     });
+    // Set today as minimum date
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('fdate-start').min = today;
+    document.getElementById('fdate-end').min = today;
     document.getElementById('modal-form-content').style.display = 'block';
     document.getElementById('modal-success').style.display = 'none';
     document.getElementById('modal').classList.add('open');
@@ -1081,6 +1129,36 @@
   function closeModal() {
     document.getElementById('modal').classList.remove('open');
     document.body.style.overflow = '';
+  }
+
+  function updateDateSummary() {
+    const start = document.getElementById('fdate-start').value;
+    const end   = document.getElementById('fdate-end').value;
+    const summary = document.getElementById('date-summary');
+
+    // Keep end min = start date
+    if (start) document.getElementById('fdate-end').min = start;
+
+    if (start && end) {
+      const s = new Date(start + 'T00:00:00');
+      const e = new Date(end   + 'T00:00:00');
+      const days = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+      const fmt = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      if (e < s) {
+        summary.textContent = '⚠ End date must be after start date.';
+        summary.classList.add('show');
+        return;
+      }
+      summary.textContent = `📅 ${fmt(s)} → ${fmt(e)}  ·  ${days} day${days !== 1 ? 's' : ''}`;
+      summary.classList.add('show');
+    } else if (start) {
+      const s = new Date(start + 'T00:00:00');
+      const fmt = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      summary.textContent = `📅 Starting ${fmt(s)} — select an end date`;
+      summary.classList.add('show');
+    } else {
+      summary.classList.remove('show');
+    }
   }
 
   function submitRequest() {
