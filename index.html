@@ -307,7 +307,9 @@
   .tier-card:hover { border-color: rgba(245,166,35,0.35); transform: translateY(-2px); }
   .tier-card.elite {
     border-color: var(--amber);
-    background: linear-gradient(160deg, #131B30 0%, #1a1f35 100%);
+    border-width: 2px;
+    background: linear-gradient(160deg, #161e36 0%, #1c2240 100%);
+    box-shadow: 0 0 32px rgba(245,166,35,0.08), inset 0 1px 0 rgba(245,166,35,0.12);
   }
   .elite-badge {
     position: absolute; top: -1px; right: 20px;
@@ -327,10 +329,10 @@
   }
   .tier-desc {
     font-size: 0.82rem; line-height: 1.7; color: var(--muted);
-    flex: 1; margin-bottom: 24px;
+    margin-bottom: 16px;
   }
   .tier-highlights {
-    list-style: none; margin-bottom: 24px;
+    list-style: none; margin-bottom: 16px;
     display: flex; flex-direction: column; gap: 7px;
   }
   .tier-highlights li {
@@ -342,13 +344,26 @@
     font-size: 0.75rem;
   }
   .tier-card.elite .tier-highlights li { color: var(--white); }
+  /* "Why this tier" best-for callout */
+  .tier-best-for {
+    display: flex; align-items: flex-start; gap: 8px;
+    background: rgba(245,166,35,0.07); border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 3px; padding: 10px 12px;
+    margin-bottom: 20px; flex: 1;
+  }
+  .tier-best-for-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 1px; }
+  .tier-best-for p {
+    font-size: 0.75rem; line-height: 1.55; color: var(--amber);
+    font-style: italic;
+  }
   .btn-add {
-    width: 100%; padding: 11px;
+    width: 100%; padding: 14px;
     background: transparent; border: 1px solid var(--navy-border);
     color: var(--white); font-family: 'Inter', sans-serif;
-    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em;
+    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em;
     text-transform: uppercase; border-radius: 2px; cursor: pointer;
     transition: background 0.2s, border-color 0.2s, color 0.2s;
+    min-height: 48px;
   }
   .btn-add:hover { border-color: var(--amber); color: var(--amber); }
   .tier-card.elite .btn-add {
@@ -407,8 +422,11 @@
   .btn-submit:hover { background: #ffba45; transform: translateY(-1px); }
   .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .sidebar-note {
-    font-size: 0.72rem; color: var(--soft); line-height: 1.6; text-align: center;
+    font-size: 0.75rem; color: var(--muted); line-height: 1.6; text-align: center;
+    background: rgba(245,166,35,0.05); border: 1px solid rgba(245,166,35,0.15);
+    border-radius: 3px; padding: 12px 14px; margin-top: 2px;
   }
+  .sidebar-note strong { color: var(--amber); font-weight: 600; }
   .cart-count {
     display: inline-flex; align-items: center; justify-content: center;
     background: var(--amber); color: var(--navy); border-radius: 50%;
@@ -498,12 +516,32 @@
   .footer-logo span { color: var(--amber); }
   .footer-copy { font-size: 0.78rem; color: var(--soft); }
 
+  /* ── MOBILE FLOAT BAR ── */
+  .mobile-float-bar {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+    background: rgba(8,13,28,0.96); backdrop-filter: blur(12px);
+    border-top: 1px solid var(--navy-border);
+    padding: 12px 16px 16px; padding-bottom: max(16px, env(safe-area-inset-bottom));
+    flex-direction: column; gap: 8px;
+  }
+  .mobile-float-bar-summary {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.78rem; color: var(--muted);
+  }
+  .mobile-float-bar-summary strong { color: var(--white); font-size: 0.85rem; }
+  .mobile-float-bar-items { font-size: 0.72rem; color: var(--muted); }
+  .mobile-float-bar .btn-submit { margin-bottom: 0; }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 1100px) {
     .page-body { flex-direction: column; }
-    .sidebar { width: 100%; position: static; padding-top: 0; padding-bottom: 60px; }
+    .sidebar { width: 100%; position: static; padding-top: 0; padding-bottom: 20px; }
     .tiers { grid-template-columns: 1fr; }
     .pillars { grid-template-columns: 1fr; }
+    .mobile-float-bar { display: flex; }
+    /* Pad page bottom so float bar doesn't cover content */
+    body { padding-bottom: 96px; }
   }
   @media (max-width: 700px) {
     nav { padding: 16px 20px; }
@@ -511,6 +549,8 @@
     .hero { padding: 0 6vw; }
     .page-body { padding: 0 16px; }
     footer { padding: 40px 6vw; flex-direction: column; align-items: flex-start; }
+    .tiers { grid-template-columns: 1fr; gap: 12px; }
+    .btn-add { min-height: 52px; font-size: 0.9rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -617,6 +657,7 @@
             <li>Real-time leaderboard tracking</li>
           </ul>
           <p class="tier-desc">Transform your event into a professional game show. Seamless, competitive, and completely turn-key.</p>
+          <div class="tier-best-for"><span class="tier-best-for-icon">💡</span><p>Best for parties, corporate events, or any gathering where you want a fully hosted, high-energy competition — no setup experience required.</p></div>
           <button class="btn-add" onclick="addToCart(this)">Add to Request</button>
         </div>
       </div>
@@ -663,6 +704,7 @@
             <li>Unlimited concurrent devices</li>
           </ul>
           <p class="tier-desc">Designed for mission-critical connectivity. A bonded, multi-network mesh system ensures your stream never drops — total peace of mind.</p>
+          <div class="tier-best-for"><span class="tier-best-for-icon">💡</span><p>Best for outdoor events, remote venues, or anywhere cellular signal is weak or unreliable. If a dropped stream would ruin your event, this is your package.</p></div>
           <button class="btn-add" onclick="addToCart(this)">Add to Request</button>
         </div>
       </div>
@@ -709,6 +751,7 @@
             <li>Vivid visuals in ambient lighting</li>
           </ul>
           <p class="tier-desc">Experience theater-quality projection in your own space. Vivid, crisp visuals even with ambient lighting — complete with an immersive soundscape.</p>
+          <div class="tier-best-for"><span class="tier-best-for-icon">💡</span><p>Best for daytime or twilight screenings where you can't fully control the light, or whenever you want a setup that genuinely impresses guests the moment they sit down.</p></div>
           <button class="btn-add" onclick="addToCart(this)">Add to Request</button>
         </div>
       </div>
@@ -729,10 +772,19 @@
 
       <div id="cart-items"></div>
 
-      <button id="submit-btn" class="btn-submit" onclick="openModal()" disabled>Submit Request</button>
-      <p class="sidebar-note">Our local specialists will review your selections to ensure your setup is perfectly optimized for your specific event space.</p>
+      <button id="submit-btn" class="btn-submit" onclick="openModal()" disabled>Request Rental Quote</button>
+      <p class="sidebar-note">🔍 <strong>Specialist Review Included</strong> — Our local team will review your selections to ensure your setup is perfectly optimized for your specific event space.</p>
     </div>
   </aside>
+</div>
+
+<!-- MOBILE FLOAT BAR -->
+<div class="mobile-float-bar" id="mobile-float-bar">
+  <div class="mobile-float-bar-summary">
+    <strong>Request Summary</strong>
+    <span class="mobile-float-bar-items" id="mobile-float-items">No packages selected</span>
+  </div>
+  <button class="btn-submit" id="mobile-submit-btn" onclick="openModal()" disabled>Request Rental Quote</button>
 </div>
 
 <!-- FOOTER -->
@@ -763,6 +815,28 @@
       <div class="form-group">
         <label for="femail">Email Address</label>
         <input type="email" id="femail" placeholder="your@email.com" />
+      </div>
+      <div class="form-group">
+        <label for="fphone">Phone Number (optional)</label>
+        <input type="tel" id="fphone" placeholder="(555) 000-0000" />
+      </div>
+      <div class="form-group">
+        <label for="faddress">Event Address <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(optional — helps us confirm service area)</span></label>
+        <input type="text" id="faddress" placeholder="Venue address or city" />
+      </div>
+      <div class="form-group">
+        <label>Preferred Contact Method</label>
+        <div style="display:flex;gap:12px;margin-top:4px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--white);text-transform:none;letter-spacing:0;cursor:pointer;">
+            <input type="radio" name="contact_pref" value="email" checked style="accent-color:var(--amber);width:16px;height:16px;"> Email
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--white);text-transform:none;letter-spacing:0;cursor:pointer;">
+            <input type="radio" name="contact_pref" value="phone" style="accent-color:var(--amber);width:16px;height:16px;"> Phone
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--white);text-transform:none;letter-spacing:0;cursor:pointer;">
+            <input type="radio" name="contact_pref" value="either" style="accent-color:var(--amber);width:16px;height:16px;"> Either
+          </label>
+        </div>
       </div>
       <div class="form-group">
         <label for="fdate">Event Date</label>
@@ -929,12 +1003,16 @@
     const empty  = document.getElementById('cart-empty');
     const badge  = document.getElementById('cart-badge');
     const submit = document.getElementById('submit-btn');
+    const mobileSubmit = document.getElementById('mobile-submit-btn');
+    const mobileItems  = document.getElementById('mobile-float-items');
 
     el.innerHTML = '';
     if (items.length === 0) {
       empty.style.display = 'flex';
       badge.style.display = 'none';
       submit.disabled = true;
+      mobileSubmit.disabled = true;
+      mobileItems.textContent = 'No packages selected';
       return;
     }
 
@@ -942,6 +1020,8 @@
     badge.style.display = 'inline-flex';
     badge.textContent   = items.length;
     submit.disabled     = false;
+    mobileSubmit.disabled = false;
+    mobileItems.textContent = items.length === 1 ? '1 package selected' : `${items.length} packages selected`;
 
     items.forEach(([id, { name, section }]) => {
       const div = document.createElement('div');
@@ -992,5 +1072,6 @@
     document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
   }
 </script>
+
 </body>
 </html>
