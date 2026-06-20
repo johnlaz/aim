@@ -900,7 +900,7 @@
       eyebrowColor: '#C9973F',
       title: 'Turn Any Room Into One Live Vote.',
       lead: 'AIM AV\'s ARS rental turns passive guests into active participants. Attendees join in seconds with a code or QR scan — no app, no account, no dead ends. You run the room from a single host dashboard: ask, watch votes land in real time, and move on. From backyard trivia to corporate icebreakers, we deliver the system pre-configured and ready to run.',
-      img: 'ars-hero.jpg',
+      img: 'assets/ars-hero.jpg',
       imgAlt: 'ARS & Trivia event marketing image',
       features: [
         { icon: '📱', title: 'Zero Friction to Join', desc: 'A phone and a browser is all attendees need. Scan the QR or type the code — they\'re in the room instantly, nothing to install.' },
@@ -916,7 +916,7 @@
       eyebrowColor: '#50B4FF',
       title: 'Internet That Keeps Up With Your Event',
       lead: 'Dead zones and dropped streams kill event momentum. AIM AV delivers bonded, multi-network connectivity that intelligently balances Starlink, 5G, and LTE signals — so your event never misses a beat, even in the most challenging outdoor venues.',
-      img: 'internet-hero.jpg',
+      img: 'assets/internet-hero.jpg',
       imgAlt: 'Event internet connectivity marketing image',
       features: [
         { icon: '📡', title: 'Multi-Network Bonding', desc: 'Simultaneously bond Starlink, 5G, and LTE into a single high-bandwidth pipe for rock-solid reliability.' },
@@ -932,7 +932,7 @@
       eyebrowColor: '#B450FF',
       title: 'The Theater Comes to You',
       lead: 'Why settle for a small screen when you can fill your backyard with theater-quality projection? AIM AV\'s Movie Night packages deliver laser-sharp visuals, immersive audio, and a complete turn-key setup — so all you bring is the popcorn.',
-      img: 'movie-hero.jpg',
+      img: 'assets/movie-hero.jpg',
       imgAlt: 'Movie night outdoor cinema marketing image',
       features: [
         { icon: '🎬', title: 'Laser Projection', desc: 'Ultra-short throw laser projectors deliver vivid, high-contrast images — even when ambient lighting is present.' },
@@ -951,7 +951,7 @@
     content.innerHTML = `
       <div class="mkt-modal-img-placeholder">
         <img
-          src="/assets/${d.img}"
+          src="${d.img}"
           alt="${d.imgAlt}"
           style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:6px 6px 0 0;display:block;"
           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
@@ -959,7 +959,7 @@
         <div class="mkt-modal-img-placeholder" style="display:none;border-radius:6px 6px 0 0;">
           <span class="img-icon">🖼️</span>
           <span class="img-hint">Place your marketing image here</span>
-          <span class="img-spec">File: /assets/${d.img} &nbsp;·&nbsp; Size: 1560 × 878 px</span>
+          <span class="img-spec">File: ${d.img} &nbsp;·&nbsp; Size: 1560 × 878 px</span>
         </div>
       </div>
       <div class="mkt-body">
