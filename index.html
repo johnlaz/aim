@@ -447,15 +447,18 @@
   /* ── DATE RANGE PICKER ── */
   .date-range-wrap { display: flex; flex-direction: column; gap: 8px; }
   .date-range-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .date-range-inputs input[type="date"] {
+  .date-range-inputs input[type="date"],
+  .date-range-inputs input[type="time"] {
     width: 100%; background: var(--navy-mid); border: 1px solid var(--navy-border);
     border-radius: 3px; padding: 12px 14px;
     color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.9rem;
     outline: none; transition: border-color 0.2s;
     color-scheme: dark;
   }
-  .date-range-inputs input[type="date"]:focus { border-color: var(--amber); }
-  .date-range-inputs input[type="date"]::-webkit-calendar-picker-indicator {
+  .date-range-inputs input[type="date"]:focus,
+  .date-range-inputs input[type="time"]:focus { border-color: var(--amber); }
+  .date-range-inputs input[type="date"]::-webkit-calendar-picker-indicator,
+  .date-range-inputs input[type="time"]::-webkit-calendar-picker-indicator {
     filter: invert(0.6) sepia(1) saturate(3) hue-rotate(5deg);
     cursor: pointer;
   }
@@ -898,7 +901,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Rental Dates <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(select start and end)</span></label>
+        <label>Rental Dates &amp; Times <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(optional — helps us plan delivery &amp; setup)</span></label>
         <div class="date-range-wrap">
           <div class="date-range-inputs">
             <div class="date-field">
@@ -906,8 +909,16 @@
               <input type="date" id="fdate-start" onchange="updateDateSummary()" />
             </div>
             <div class="date-field">
+              <span class="date-sublabel">Start Time</span>
+              <input type="time" id="ftime-start" onchange="updateDateSummary()" />
+            </div>
+            <div class="date-field">
               <span class="date-sublabel">End Date</span>
               <input type="date" id="fdate-end" onchange="updateDateSummary()" />
+            </div>
+            <div class="date-field">
+              <span class="date-sublabel">End Time</span>
+              <input type="time" id="ftime-end" onchange="updateDateSummary()" />
             </div>
           </div>
           <div class="date-range-summary" id="date-summary"></div>
@@ -1120,6 +1131,11 @@
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('fdate-start').min = today;
     document.getElementById('fdate-end').min = today;
+    document.getElementById('fdate-start').value = '';
+    document.getElementById('fdate-end').value = '';
+    document.getElementById('ftime-start').value = '';
+    document.getElementById('ftime-end').value = '';
+    document.getElementById('date-summary').classList.remove('show');
     document.getElementById('modal-form-content').style.display = 'block';
     document.getElementById('modal-success').style.display = 'none';
     document.getElementById('modal').classList.add('open');
@@ -1132,33 +1148,47 @@
   }
 
   function updateDateSummary() {
-    const start = document.getElementById('fdate-start').value;
-    const end   = document.getElementById('fdate-end').value;
-    const summary = document.getElementById('date-summary');
+    const startDate = document.getElementById('fdate-start').value;
+    const startTime = document.getElementById('ftime-start').value;
+    const endDate   = document.getElementById('fdate-end').value;
+    const endTime   = document.getElementById('ftime-end').value;
+    const summary   = document.getElementById('date-summary');
 
-    // Keep end min = start date
-    if (start) document.getElementById('fdate-end').min = start;
+    if (startDate) document.getElementById('fdate-end').min = startDate;
 
-    if (start && end) {
-      const s = new Date(start + 'T00:00:00');
-      const e = new Date(end   + 'T00:00:00');
-      const days = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
-      const fmt = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-      if (e < s) {
-        summary.textContent = '⚠ End date must be after start date.';
-        summary.classList.add('show');
-        return;
-      }
-      summary.textContent = `📅 ${fmt(s)} → ${fmt(e)}  ·  ${days} day${days !== 1 ? 's' : ''}`;
-      summary.classList.add('show');
-    } else if (start) {
-      const s = new Date(start + 'T00:00:00');
-      const fmt = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-      summary.textContent = `📅 Starting ${fmt(s)} — select an end date`;
-      summary.classList.add('show');
-    } else {
-      summary.classList.remove('show');
+    const fmtDate = d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const fmtTime = t => { if (!t) return null; const [h, m] = t.split(':'); const ampm = +h >= 12 ? 'PM' : 'AM'; return `${+h % 12 || 12}:${m} ${ampm}`; };
+
+    if (!startDate && !endDate) { summary.classList.remove('show'); return; }
+
+    let line = '📅 ';
+    if (startDate) {
+      line += fmtDate(startDate);
+      if (startTime) line += ` at ${fmtTime(startTime)}`;
     }
+    if (endDate) {
+      const s = new Date(startDate + 'T00:00:00');
+      const e = new Date(endDate   + 'T00:00:00');
+      if (startDate && e < s) {
+        summary.textContent = '⚠ End date must be on or after start date.';
+        summary.classList.add('show'); return;
+      }
+      if (startDate) {
+        const days = Math.round((e - s) / (1000*60*60*24));
+        line += ` → ${fmtDate(endDate)}`;
+        if (endTime) line += ` at ${fmtTime(endTime)}`;
+        if (days === 0) line += '  ·  Same-day rental';
+        else line += `  ·  ${days + 1} day${days + 1 !== 1 ? 's' : ''}`;
+      } else {
+        line += fmtDate(endDate);
+        if (endTime) line += ` at ${fmtTime(endTime)}`;
+      }
+    } else if (startDate) {
+      line += endTime ? '' : '  — select an end date';
+    }
+
+    summary.textContent = line;
+    summary.classList.add('show');
   }
 
   function submitRequest() {
