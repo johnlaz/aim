@@ -14,9 +14,10 @@
     --navy-mid: #0E1628;
     --navy-card:#131B30;
     --navy-border: #1E2A44;
-    --amber:    #F5A623;
-    --amber-dim:#C47D0E;
-    --amber-glow: rgba(245,166,35,0.12);
+    --amber:    #C9973F;
+    --amber-dim:#9A6E25;
+    --amber-glow: rgba(201,151,63,0.12);
+    --amber-bright: #D7AB5A;
     --white:    #F8F5EF;
     --muted:    #8A95AA;
     --soft:     #4A5568;
@@ -42,12 +43,21 @@
     border-bottom: 1px solid rgba(255,255,255,0.04);
   }
   .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .nav-logo-img {
+    height: 42px; width: 42px; object-fit: contain;
+    mix-blend-mode: lighten;
+    filter: brightness(1.05);
+  }
+  .nav-logo-text {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.6rem; font-weight: 600; letter-spacing: 0.08em;
     color: var(--white); line-height: 1;
     display: flex; flex-direction: column;
   }
-  .nav-logo span { color: var(--amber); }
+  .nav-logo-text span { color: var(--amber-bright); }
   .nav-logo-sub {
     font-family: 'Inter', sans-serif;
     font-size: 0.6rem; font-weight: 500; letter-spacing: 0.22em;
@@ -68,7 +78,7 @@
     padding: 10px 22px; border-radius: 2px;
     transition: background 0.2s, transform 0.15s;
   }
-  .nav-cta:hover { background: #ffba45; transform: translateY(-1px); }
+  .nav-cta:hover { background: #D7AB5A; transform: translateY(-1px); }
 
   /* ── HERO ── */
   .hero {
@@ -114,7 +124,7 @@
     transition: background 0.2s, transform 0.15s;
     text-decoration: none; display: inline-block;
   }
-  .btn-primary:hover { background: #ffba45; transform: translateY(-1px); }
+  .btn-primary:hover { background: #D7AB5A; transform: translateY(-1px); }
   .btn-ghost {
     background: transparent; color: var(--white);
     font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em;
@@ -369,7 +379,7 @@
   .tier-card.elite .btn-add {
     background: var(--amber); color: var(--navy); border-color: var(--amber);
   }
-  .tier-card.elite .btn-add:hover { background: #ffba45; }
+  .tier-card.elite .btn-add:hover { background: #D7AB5A; }
   .btn-add.added {
     background: rgba(245,166,35,0.1); border-color: var(--amber); color: var(--amber);
   }
@@ -419,7 +429,7 @@
     cursor: pointer; transition: background 0.2s, transform 0.15s;
     margin-bottom: 14px;
   }
-  .btn-submit:hover { background: #ffba45; transform: translateY(-1px); }
+  .btn-submit:hover { background: #D7AB5A; transform: translateY(-1px); }
   .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .sidebar-note {
     font-size: 0.75rem; color: var(--muted); line-height: 1.6; text-align: center;
@@ -502,6 +512,19 @@
   }
   .modal-success p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
 
+  .hero-logo {
+    width: clamp(180px, 22vw, 320px);
+    position: absolute; right: 10vw; top: 50%;
+    transform: translateY(-50%);
+    mix-blend-mode: lighten;
+    opacity: 0.92;
+    pointer-events: none;
+    filter: drop-shadow(0 0 40px rgba(201,151,63,0.25));
+  }
+  @media (max-width: 900px) {
+    .hero-logo { display: none; }
+  }
+
   /* ── FOOTER ── */
   footer {
     border-top: 1px solid var(--navy-border);
@@ -509,11 +532,8 @@
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 24px;
   }
-  .footer-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.3rem; font-weight: 600; color: var(--white);
-  }
-  .footer-logo span { color: var(--amber); }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--white); }
+  .footer-logo span { color: var(--amber-bright); }
   .footer-copy { font-size: 0.78rem; color: var(--soft); }
 
   /* ── MOBILE FLOAT BAR ── */
@@ -562,7 +582,10 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">AIM<span>AV</span><span class="nav-logo-sub">Technology Rentals</span></div>
+  <div class="nav-logo">
+    <img src="aimav_icon.png" alt="AIM AV" class="nav-logo-img" />
+    <div class="nav-logo-text">AIM<span>AV</span><span class="nav-logo-sub">Technology Rentals</span></div>
+  </div>
   <div class="nav-links">
     <a href="#ars">ARS &amp; Trivia</a>
     <a href="#internet">Internet &amp; Connectivity</a>
@@ -575,6 +598,7 @@
 <section class="hero">
   <div class="hero-bg-glow"></div>
   <div class="hero-bg-glow2"></div>
+  <img src="aimav_icon.png" alt="" class="hero-logo" aria-hidden="true" />
   <p class="hero-eyebrow">Florida's Premier Event Rental Company</p>
   <h1>Premium Entertainment<br>&amp; <em>Connectivity,</em><br>Delivered to Your Door.</h1>
   <p class="hero-sub">Theater-quality projection. Seamless internet. Professional trivia systems. Tailored packages for gatherings that deserve to be unforgettable.</p>
@@ -789,7 +813,10 @@
 
 <!-- FOOTER -->
 <footer id="contact">
-  <div class="footer-logo">AIM<span>AV</span></div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="aimav_icon.png" alt="AIM AV" style="height:36px;width:36px;object-fit:contain;mix-blend-mode:lighten;opacity:0.85;" />
+    <div class="footer-logo">AIM<span>AV</span></div>
+  </div>
   <p class="footer-copy">© 2025 AIM AV. All rights reserved. Florida's premier event rental specialists.</p>
 </footer>
 
@@ -870,7 +897,7 @@
   const mktData = {
     ars: {
       eyebrow: 'ARS · Audience Response System',
-      eyebrowColor: '#F5A623',
+      eyebrowColor: '#C9973F',
       title: 'Turn Any Room Into One Live Vote.',
       lead: 'AIM AV\'s ARS rental turns passive guests into active participants. Attendees join in seconds with a code or QR scan — no app, no account, no dead ends. You run the room from a single host dashboard: ask, watch votes land in real time, and move on. From backyard trivia to corporate icebreakers, we deliver the system pre-configured and ready to run.',
       img: 'ars-hero.jpg',
